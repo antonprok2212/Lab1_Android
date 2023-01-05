@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">lab1_android</string>
+    <string name="ok" >Ок</string>
+    <string name="loose_title">Ви програли</string>
+    <string name="win_title"  >Ви перемогли</string>
+    <string name="_50_50">Підказка 50х50</string>
+    <string name="start_game">Почати гру</string>
+    <string name="settings">Налаштування</string>
+    <string name="takemoney">Забрати</string>
+</resources>
