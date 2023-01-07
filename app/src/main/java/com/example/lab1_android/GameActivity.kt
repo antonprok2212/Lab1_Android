@@ -1,8 +1,12 @@
 package com.example.lab1_android
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.ServiceConnection
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_game.*
@@ -10,8 +14,17 @@ import kotlinx.android.synthetic.main.activity_settings.*
 
 class GameActivity : AppCompatActivity(), View.OnClickListener {
 
-    lateinit var preferencesHelper: PreferencesHelper
+    private var service: ReadQuestionsService? = null
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, binder: IBinder) {
+            service = (binder as ReadQuestionsService)
+        }
+        override fun onServiceDisconnected(name: ComponentName) {
+            service = null
+        }
+    }
     lateinit var questions: List<Question>
+    lateinit var preferencesHelper: PreferencesHelper
     var baseValue = 100000
     var sum = 0
     var currentIndex = 0
@@ -19,6 +32,8 @@ class GameActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+            //questions = service?.readQuestions()!!
+
         preferencesHelper = PreferencesHelper(this)
         baseValue = 1000000/preferencesHelper.questionCount
         btnHint.setOnClickListener {
@@ -50,7 +65,7 @@ class GameActivity : AppCompatActivity(), View.OnClickListener {
         sum = 0
         currentIndex = 0
         btnHint.visibility = if (preferencesHelper.isHintEnabled) View.VISIBLE else View.GONE
-        questions = generateQuestions().shuffled()
+
         questions.forEach { it.answers = it.answers.shuffled() }
         questions = questions.take(preferencesHelper.questionCount)
         showNextQuestion()
